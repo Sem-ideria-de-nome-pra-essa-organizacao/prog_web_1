@@ -48,6 +48,19 @@ class db {
         return $stmt->fetchALL(PDO::FETCH_CLASS);
 
     }
+    public function filter($data){
+        
+        $tipo = $data['tipo'];
+        $val = $data['valor'];
+        $conn = $this->conn();
+
+        $sql = "SELECT * FROM categoria WHERE $tipo LIKE ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(["%$val%",]);
+        
+        return $stmt->fetchALL(PDO::FETCH_CLASS);
+
+    }
 
     public function destroy($id){
         $conn = $this->conn();
