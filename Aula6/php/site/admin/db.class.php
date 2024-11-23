@@ -15,7 +15,7 @@ class db {
 
         try{
             $conn = new PDO(
-                "mysql:host=$this->host;dbname=$this->dbname",
+                "mysql:host=$this->host;dbname=$this->dbname;port=$this->port",
                 $this->user,
                 $this->password,
                 [
@@ -46,6 +46,15 @@ class db {
         $stmt->execute();
         
         return $stmt->fetchALL(PDO::FETCH_CLASS);
+
+    }
+
+    public function destroy($id){
+        $conn = $this->conn();
+        $sql = 'DELETE FROM categoria WHERE id =?';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$id]);
+        
 
     }
 }

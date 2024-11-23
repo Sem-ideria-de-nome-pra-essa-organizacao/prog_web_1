@@ -4,7 +4,7 @@ include "../db.class.php";
     
     if(!empty($_POST)){
         $db->insert($_POST);
-        echo "<b>FUNFO</b>";
+        header("Location:CategoriaList.php");
     }
     
 
