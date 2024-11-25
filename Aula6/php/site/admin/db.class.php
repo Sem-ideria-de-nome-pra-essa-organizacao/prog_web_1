@@ -38,6 +38,12 @@ class db {
         $stmt = $conn->prepare($sql);
         $stmt->execute([$data['nome']]);
     }
+    public function update($data){
+        $conn = $this->conn();
+        $sql = "UPDATE categoria SET nome = ? WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$data['nome'],$data['id']]);
+    }
 
     public function all(){
         $conn = $this->conn();
@@ -59,6 +65,16 @@ class db {
         $stmt->execute(["%$val%",]);
         
         return $stmt->fetchALL(PDO::FETCH_CLASS);
+
+    }
+    public function find($id){
+                $conn = $this->conn();
+
+        $sql = "SELECT * FROM categoria WHERE id LIKE ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$id,]);
+
+        return $stmt->fetchObject();
 
     }
 
