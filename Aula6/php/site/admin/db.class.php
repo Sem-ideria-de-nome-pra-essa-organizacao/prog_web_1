@@ -1,19 +1,24 @@
 <?php
 
-class db {
+class db
+{
 
     private $host = "localhost";
     private $user = "root";
     private $password = "";
     private $port = "3306";
-    private $dbname ="db_pweb1_2024_2_blog";
+    private $table_name;
+    private $dbname = "db_pweb1_2024_2_blog";
 
-    public function __construct(){
+    public function __construct($table_name)
+    {
         $this->conn();
+        $this->table_name = $table_name;
     }
-    function conn(){
+    function conn()
+    {
 
-        try{
+        try {
             $conn = new PDO(
                 "mysql:host=$this->host;dbname=$this->dbname;port=$this->port",
                 $this->user,
@@ -21,69 +26,103 @@ class db {
                 [
                     PDO::ATTR_ERRMODE,
                     PDO::ERRMODE_EXCEPTION,
-                    PDO::MYSQL_ATTR_INIT_COMMAND =>" SET NAMES utf8"
+                    PDO::MYSQL_ATTR_INIT_COMMAND => " SET NAMES utf8"
                 ]
             );
 
             return $conn;
 
-        } catch(PDOException $e){
-            echo "Erro: ". $e->getMessage();
+        } catch (PDOException $e) {
+            echo "Erro: " . $e->getMessage();
         }
     }
 
-    public function insert($data){
+    public function insert($data)
+    {
         $conn = $this->conn();
-        $sql = "INSERT INTO categoria(nome) VALUES(?)";
+        $sql = "INSERT INTO $this->table_name (";
+        $flag = 0;
+        $array_values = [];
+        unset($data["id"]);
+
+        foreach ($data as $campo => $valor) {
+            $sql .= $flag == 0 ? "$campo" : ",$campo";
+            $flag = 1;
+
+        }
+        $sql .= ") VALUES (";
+        $flag = 0;
+        
+        foreach ($data as $campo => $valor) {
+            $sql .= $flag == 0 ? "?" : ",?";
+            $flag = 1;
+            $array_values[] = $valor; 
+        }
+        $sql .= ")";
+
         $stmt = $conn->prepare($sql);
-        $stmt->execute([$data['nome']]);
+        $stmt->execute($array_values);
     }
-    public function update($data){
+    public function update($data)
+    {
         $conn = $this->conn();
-        $sql = "UPDATE categoria SET nome = ? WHERE id = ?";
+        $sql = "UPDATE $this->table_name SET ";
+        $flag = 0;
+        $id = $data['id'];
+        $array_values = [];
+
+        foreach ($data as $campo => $valor) {
+            $sql .= $flag == 0 ? "$campo=?" : ",$campo=?";
+            $flag = 1;
+            $array_values[] = $valor;
+        }
+        $sql .= " WHERE id = $id";
         $stmt = $conn->prepare($sql);
-        $stmt->execute([$data['nome'],$data['id']]);
+        $stmt->execute($array_values);
     }
 
-    public function all(){
+    public function all()
+    {
         $conn = $this->conn();
-        $sql = 'SELECT * FROM categoria';
+        $sql = "SELECT * FROM $this->table_name";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
-        
+
         return $stmt->fetchALL(PDO::FETCH_CLASS);
 
     }
-    public function filter($data){
-        
+    public function filter($data)
+    {
+
         $tipo = $data['tipo'];
         $val = $data['valor'];
         $conn = $this->conn();
 
-        $sql = "SELECT * FROM categoria WHERE $tipo LIKE ?";
+        $sql = "SELECT * FROM $this->table_name WHERE $tipo LIKE ?";
         $stmt = $conn->prepare($sql);
         $stmt->execute(["%$val%",]);
-        
+
         return $stmt->fetchALL(PDO::FETCH_CLASS);
 
     }
-    public function find($id){
-                $conn = $this->conn();
+    public function find($id)
+    {
+        $conn = $this->conn();
 
-        $sql = "SELECT * FROM categoria WHERE id LIKE ?";
+        $sql = "SELECT * FROM $this->table_name WHERE id LIKE ?";
         $stmt = $conn->prepare($sql);
         $stmt->execute([$id,]);
 
         return $stmt->fetchObject();
-
     }
 
-    public function destroy($id){
+    public function destroy($id)
+    {
         $conn = $this->conn();
-        $sql = 'DELETE FROM categoria WHERE id =?';
+        $sql = 'DELETE FROM $this->table_name WHERE id =?';
         $stmt = $conn->prepare($sql);
         $stmt->execute([$id]);
-        
+
 
     }
 }
