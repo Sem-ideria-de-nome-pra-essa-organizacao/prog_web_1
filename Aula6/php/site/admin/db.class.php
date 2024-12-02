@@ -81,10 +81,11 @@ class db
         $stmt->execute($array_values);
     }
 
-    public function all()
+    public function all($table_name = null)
     {
+        $table_name = !empty($table_name) ? $table_name : $this->table_name;
         $conn = $this->conn();
-        $sql = "SELECT * FROM $this->table_name";
+        $sql = "SELECT * FROM $table_name";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
 
