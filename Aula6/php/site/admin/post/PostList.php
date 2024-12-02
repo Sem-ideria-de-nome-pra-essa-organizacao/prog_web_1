@@ -34,13 +34,14 @@ if(!empty(($_POST))){
         <?php
         foreach($data as $item){
             $status =  $item->status?'Ativo':'Inativo';
-            echo "<tr style='border:1px solid #000;'>
+            $categoria = $db->find($item->categoria_id,"categoria");
+                echo "<tr style='border:1px solid #000;'>
                 <td style='border:1px solid #000;'>$item->id</td>
                 <td  style='border:1px solid #000;'>$item->titulo</td>
                 <td  style='border:1px solid #000;'>$item->data_publicacao</td>
                 <td  style='border:1px solid #000;'>$item->texto</td>
                 <td  style='border:1px solid #000;'>$status</td>
-                <td  style='border:1px solid #000;'>$item->categoria_id</td>
+                <td  style='border:1px solid #000;'>$categoria->nome</td>
                 <td style='border:1px solid #000;'><a href='./PostForm.php?id=$item->id'>Editar</a> <a onclick='return confirm(\" Deseja realmete excluir?\")'href='./PostList.php?id=$item->id'>Deletar</a></td>
             </tr>";
         }

@@ -106,11 +106,13 @@ class db
         return $stmt->fetchALL(PDO::FETCH_CLASS);
 
     }
-    public function find($id)
+    public function find($id,$table_name=null)
     {
         $conn = $this->conn();
+        $table_name = !empty($table_name) ? $table_name : $this->table_name;
 
-        $sql = "SELECT * FROM $this->table_name WHERE id LIKE ?";
+
+        $sql = "SELECT * FROM $table_name WHERE id LIKE ?";
         $stmt = $conn->prepare($sql);
         $stmt->execute([$id,]);
 
