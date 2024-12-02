@@ -120,7 +120,7 @@ class db
     public function destroy($id)
     {
         $conn = $this->conn();
-        $sql = 'DELETE FROM $this->table_name WHERE id =?';
+        $sql = "DELETE FROM $this->table_name WHERE id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->execute([$id]);
 
