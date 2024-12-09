@@ -43,7 +43,9 @@ $status = empty($data->status)?"1":$data->status;
     <select name="categoria_id" id="">
         <?php
         foreach ($categorias as $cataegoria) {
-            echo "<option value='$cataegoria->id'>$cataegoria->nome</option>";
+        $selected = $cataegoria->id == $data->  categoria_id? "selected":"";
+
+            echo "<option $selected value='$cataegoria->id'>$cataegoria->nome</option>";
         }
         ?>
     </select><br>
