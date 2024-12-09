@@ -2,15 +2,20 @@
 include "./db.class.php";
 $db = new db("usuario");
 if (!empty($_POST)) {
+    if ($_POST['senha'] === $_POST["c_senha"]) {
+        
+        $_POST['senha'] = password_hash($_POST['senha'], PASSWORD_BCRYPT);
+        unset($_POST['c_senha']);
+        $db->insert($_POST);
 
-    $db->insert($_POST);
-
-    header("Location:PostList.php");
+        header("Location:PostList.php");
+    } else {
+        echo "<b>Senhas não coincidem</b>";
+    }
 
 }
 
 
-$status = empty($data->status) ? "1" : $data->status;
 
 ?>
 
@@ -27,6 +32,9 @@ $status = empty($data->status) ? "1" : $data->status;
 
     <label for="">senha</label><br>
     <input type="password" name="senha">
+
+    <label for="">Confirmar senha</label><br>
+    <input type="password" name="c_senha">
 
 
     <button type="submit">Salvar</button>
